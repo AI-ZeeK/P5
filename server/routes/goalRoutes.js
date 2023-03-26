@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
 import {
-	deleteGoal,
-	getGoals,
-	setGoal,
-	updateGoal,
+  deleteGoal,
+  getGoals,
+  setGoal,
+  updateGoal,
 } from "../controllers/goalController.js";
 import { protect } from "../middleware/authMiddleware.js";
 

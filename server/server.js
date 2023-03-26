@@ -19,5 +19,5 @@ app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, () =>
-	console.log(`Server running on port ${PORT}`.blue.italic.bold)
+  console.log(`Server running on port ${PORT}`.blue.italic.bold)
 );
