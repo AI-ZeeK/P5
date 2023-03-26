@@ -63,6 +63,73 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+export const githublogin = asyncHandler(async (req, res) => {
+  if (req.isAuthenticated()) {
+    res.send("You are logged in!");
+  } else {
+    res.send("You are not logged in.");
+  }
+});
+
+export const googlelogin = asyncHandler(async (req, res) => {
+  const { familyName, givenName, email } = req.body;
+  if (!familyName || !givenName || !email || !password) {
+    res.status(400);
+    throw new Error("Please add all fields");
+  }
+
+  const user = await UserSchema.findOne({ email });
+  if (!user) {
+    res.status(400);
+    throw new Error("User Not Found");
+  }
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid Credentials");
+  }
+});
+export const googleregister = asyncHandler(async (req, res) => {
+  const { familyName, givenName, email, googleId, password } = req.body;
+  if (!familyName || !givenName || !email || !password) {
+    res.status(400);
+    throw new Error("Please add all fields");
+  }
+
+  const user = await UserSchema.findOne({ email });
+  if (user) {
+    res.status(400);
+    throw new Error("User already registered");
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const newUser = await UserSchema.create({
+    name: `${familyName} ${givenName}`,
+    email,
+    googleId,
+    password: hashedPassword,
+  });
+
+  if (newUser) {
+    res.status(201).json({
+      _id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      token: generateToken(newUser._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
+});
 // @desc Get User data
 // @routes Get /api/users/user
 // @access Private

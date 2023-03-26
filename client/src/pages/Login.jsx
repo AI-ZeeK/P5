@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import { login, reset } from "../features/auth/authSlice";
+import { googlelogin, login, reset } from "../features/auth/authSlice";
+import GitHubLogin from "react-github-login";
+import { GITHUB_CLIENT_ID, GOOGLE_CLIENT_ID } from "./Register";
+import { GrGithub, GrGoogle } from "react-icons/gr";
+import GoogleLogin from "react-google-login";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +17,31 @@ const Login = () => {
     password: "",
     password2: "",
   });
+  const onSuccess = (response) => {
+    console.log(response);
+    // Here you can handle the GitHub authentication response
+  };
 
+  const onFailure = (response) => {
+    console.error(response);
+    // Here you can handle the GitHub authentication failure
+  };
+  const googleSuccess = async (res) => {
+    const result = res?.profileObj;
+    // const token = res?.tokenId;
+    console.log(result);
+    dispatch(googlelogin(result));
+    // try {
+    //   navigate("/");
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+  const googleFailure = (error) => {
+    console.log(error);
+
+    console.log("Google Sign in was Unsuccessful. try again later");
+  };
   const { email, password } = formData;
 
   const navigate = useNavigate();
@@ -95,6 +123,28 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <GitHubLogin
+          clientId={GITHUB_CLIENT_ID}
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          className="btn btn-block"
+          redirectUri=""
+          buttonText="Sign in with GitHub">
+          <GrGithub />
+          Sign in with GitHub
+        </GitHubLogin>
+        <GoogleLogin
+          clientId={GOOGLE_CLIENT_ID}
+          render={(renderProps) => (
+            <button className="btn btn-block" onClick={renderProps.onClick}>
+              <GrGoogle /> Sign in with Google
+            </button>
+          )}
+          onFailure={googleFailure}
+          onSuccess={googleSuccess}
+          cookiePolicy="single_host_origin"
+          // isSignedIn={true}
+        />
       </section>
     </>
   );

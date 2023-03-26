@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-const dotEnv = dotenv.config({ path: "./config/.env" });
+dotenv.config();
 const PORT = process.env.PORT || 5000;
 import colors from "colors";
 import connectDB from "./config/db.js";

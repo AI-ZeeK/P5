@@ -23,6 +23,26 @@ const login = async (userData) => {
 
   return response.data;
 };
+// Login User
+const googlelogin = async (userData) => {
+  // const { data } = await axios.post(API_URL + "googlelogin", userData);
+
+  // if (data) {
+  //   localStorage.setItem("user", JSON.stringify(data));
+  // }
+  console.log(userData, { ...userData });
+  // return data;
+};
+// Login User
+const googleregister = async (userData) => {
+  const { data } = await axios.post(API_URL + "googleregister", userData);
+
+  if (data) {
+    localStorage.setItem("user", JSON.stringify(data));
+  }
+  console.log(data, userData.email);
+  return data;
+};
 // Logout user
 const logout = () => {
   localStorage.removeItem("user");
@@ -32,6 +52,8 @@ const authService = {
   register,
   logout,
   login,
+  googlelogin,
+  googleregister,
 };
 
 export default authService;

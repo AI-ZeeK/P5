@@ -43,6 +43,40 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   }
 });
 
+export const googlelogin = createAsyncThunk(
+  "/googlelogin",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.googlelogin(user);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const googleregister = createAsyncThunk(
+  "/googleregister",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.googleregister(user);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // Logout user
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
@@ -83,6 +117,34 @@ export const authSlice = createSlice({
       state.user = action.payload;
     });
     builder.addCase(login.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.user = null;
+    });
+    builder.addCase(googlelogin.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(googlelogin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = action.payload;
+    });
+    builder.addCase(googlelogin.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.user = null;
+    });
+    builder.addCase(googleregister.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(googleregister.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = action.payload;
+    });
+    builder.addCase(googleregister.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;
